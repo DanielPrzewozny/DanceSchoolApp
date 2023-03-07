@@ -1,0 +1,49 @@
+﻿using DanceSchoolAPI.Extensions;
+using DanceSchoolAPI.Models.Options;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
+
+namespace DanceSchoolAPI;
+
+public class Startup
+{
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddMvcCore();
+
+        services.AddSwagger("v1", new OpenApiInfo { Title = "DanceSchoolApp", Version = "v1" }, false);
+
+        services.AddOptions<HostingOptions>(Configuration);
+
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+    }
+
+    public void Configure(IApplicationBuilder app, HostingOptions hostingOptions)
+    {
+        if (hostingOptions.UseSwagger)
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger("DanceSchoolApp", "doc/swagger");
+        }
+
+        app.UseRouting();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+    }
+}

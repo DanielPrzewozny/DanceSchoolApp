@@ -1,0 +1,40 @@
+PUT _index_template/logging_policy_template?pretty
+{
+  "index_patterns": ["dev_*"],   
+  "priority" : 99990,
+  "template": {
+    "settings": {
+      "index.lifecycle.name": "cleanup_policy"
+	  }
+  }
+}
+
+PUT _index_template/dev_template
+{
+  "index_patterns": ["dev_*"],   
+  "priority" : 99990,
+  "template": {
+    "settings": {
+	    "number_of_shards": 1,
+      "number_of_replicas": 1,
+      "index.lifecycle.name": "cleanup_policy",      
+      "index.lifecycle.rollover_alias": "dev"    
+	  },
+    "mappings": {
+      "dynamic": "true",
+      "dynamic_date_formats": [
+        "strict_date_optional_time",
+        "yyyy/MM/dd HH:mm:ss Z||yyyy/MM/dd Z"
+      ],
+      "dynamic_templates": [],
+      "date_detection": true,
+      "numeric_detection": false,
+      "properties": {
+        "date": {
+          "type": "date"
+        }
+      }
+    },
+    "aliases": {}
+  }
+}
