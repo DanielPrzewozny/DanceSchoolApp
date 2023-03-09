@@ -41,7 +41,7 @@ public class Program
             {
                 config.AddJsonFile("appsettings.json", true, false)
                     .AddJsonFile($"appsettings.{host.HostingEnvironment.EnvironmentName}.json", true, false);
-                config.AddEnvironmentVariables("EVENTRULEAPI_");
+                config.AddEnvironmentVariables("DANCESCHOOLPI_");
             })
             .UseWindowsService()
             .UseSystemd()
