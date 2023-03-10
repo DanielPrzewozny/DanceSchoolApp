@@ -1,6 +1,3 @@
-using System;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
 using DanceSchoolAPI.Models.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +5,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
+using System;
+using System.IO;
+using System.Net;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace DanceSchoolAPI;
 
@@ -41,7 +44,7 @@ public class Program
             {
                 config.AddJsonFile("appsettings.json", true, false)
                     .AddJsonFile($"appsettings.{host.HostingEnvironment.EnvironmentName}.json", true, false);
-                config.AddEnvironmentVariables("EVENTRULEAPI_");
+                config.AddEnvironmentVariables("DANCESCHOOLAPI_");
             })
             .UseWindowsService()
             .UseSystemd()
@@ -54,17 +57,20 @@ public class Program
                         if (hostingOptions.UseInsecure)
                         {
                             logger.Info("Use http");
-                            options.ListenAnyIP(hostingOptions.InsecurePort);
+                            if (context.HostingEnvironment.EnvironmentName == Extensions.Environments.Docker)
+                                options.Listen(IPAddress.Any, 80, listenOption => { listenOption.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2;  });
+                            else
+                                options.ListenAnyIP(hostingOptions.InsecurePort);
                         }
 
                         if (hostingOptions.UseSecure)
                         {
                             logger.Info("Use https");
-                            options.ListenAnyIP(hostingOptions.SecurePort, options =>
-                            {
-                                var cert = new X509Certificate2(hostingOptions.CertificatePath, hostingOptions.CertificatePassword);
-                                options.UseHttps(cert);
-                            });
+                            var cert = new X509Certificate2(hostingOptions.CertificatePath, hostingOptions.CertificatePassword);
+                            if (context.HostingEnvironment.EnvironmentName == Extensions.Environments.Docker)
+                                options.Listen(IPAddress.Any, 443, listenOption => listenOption.UseHttps(cert));
+                            else
+                                options.ListenAnyIP(hostingOptions.SecurePort, options => options.UseHttps(cert));
                         }
                     })
             .ConfigureLogging(logging =>

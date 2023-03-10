@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 
 namespace DanceSchoolAPI.Extensions;
 
@@ -11,7 +13,7 @@ public static class AppBuilderExtensions
     })
     .UseSwaggerUI(c =>
     {
-        c.RoutePrefix = route; 
+        c.RoutePrefix = route;
         c.SwaggerEndpoint($"/{route}/v1/swagger.json", "DanceSchoolAPI");
     });
 }

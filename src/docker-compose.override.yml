@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  danceschoolapi:
+    environment:
+     - ASPNETCORE_ENVIRONMENT=Docker
+     - ASPNETCORE_URLS=https://+:443;http://+:80
+     - ASPNETCORE_HTTPS_PORT=5556
+     - ASPNETCORE_Kestrel__Certificates__Default__Password=dp2023
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+     - "5555:80"
+     - "5556:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ~\.microsoft\usersecrets:\root\.microsoft\usersecrets:ro

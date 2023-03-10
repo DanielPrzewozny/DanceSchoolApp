@@ -32,7 +32,6 @@ public static class ServiceExtensions
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc(name, info);
-
             if (useJWT)
             {
                 c.AddSecurityDefinition("Bearer",
@@ -46,7 +45,17 @@ public static class ServiceExtensions
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
                         {
-                            new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "Bearer",  Type = ReferenceType.SecurityScheme } },
+                            new OpenApiSecurityScheme 
+                            {
+                                Reference = new OpenApiReference 
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme,
+                                },
+                                Scheme = "oauth2",
+                                Name = "Bearer",
+                                In = ParameterLocation.Header,
+                            },
                             new List<string>()
                         },
                     }

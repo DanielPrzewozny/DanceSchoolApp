@@ -1,15 +1,20 @@
 ﻿using DanceSchoolAPI.Extensions;
 using DanceSchoolAPI.Models.Options;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace DanceSchoolAPI;
 
 public class Startup
 {
+    const string CORS_POLICY = "CorsPolicy";
+
     public IConfiguration Configuration { get; }
 
     public Startup(IConfiguration configuration)
@@ -29,8 +34,13 @@ public class Startup
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }
 
-    public void Configure(IApplicationBuilder app, HostingOptions hostingOptions)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, HostingOptions hostingOptions)
     {
+        if (env.IsDevelopment())
+            app.UseDeveloperExceptionPage();
+        else
+            app.UseHsts();
+
         if (hostingOptions.UseSwagger)
         {
             app.UseDeveloperExceptionPage();
@@ -38,6 +48,7 @@ public class Startup
         }
 
         app.UseRouting();
+        app.UseCors(CORS_POLICY);
         app.UseAuthentication();
         app.UseAuthorization();
 
