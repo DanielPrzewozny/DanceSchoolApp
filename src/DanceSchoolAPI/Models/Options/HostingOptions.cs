@@ -1,4 +1,5 @@
-﻿namespace DanceSchoolAPI.Models.Options;
+﻿
+namespace DanceSchoolAPI.Models.Options;
 
 public class HostingOptions : IOptions
 {

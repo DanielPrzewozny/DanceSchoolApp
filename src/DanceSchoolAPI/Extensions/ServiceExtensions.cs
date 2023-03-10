@@ -45,9 +45,9 @@ public static class ServiceExtensions
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                     {
                         {
-                            new OpenApiSecurityScheme 
+                            new OpenApiSecurityScheme
                             {
-                                Reference = new OpenApiReference 
+                                Reference = new OpenApiReference
                                 {
                                     Id = "Bearer",
                                     Type = ReferenceType.SecurityScheme,

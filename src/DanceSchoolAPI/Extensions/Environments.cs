@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-
+﻿
 namespace DanceSchoolAPI.Extensions;
 
 public static class Environments
