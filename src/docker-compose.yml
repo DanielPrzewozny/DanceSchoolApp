@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  danceschoolapi:
+    image: ${DOCKER_REGISTRY-}danceschoolapi
+    build:
+      context: .
+      dockerfile: DanceSchoolAPI/Dockerfile
