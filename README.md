@@ -29,6 +29,7 @@
 - Lessons
 - ArchivedLessons
 
+## 6. Docker
 
 ## Libraries used in project: 
 > work in progress
