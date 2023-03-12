@@ -17,11 +17,10 @@ public static class ServiceExtensions
         return services;
     }
 
-    public static TOptions AddOptions<TOptions>(this IServiceCollection services, IConfiguration configuration, string filename = "appsettings.json")
+    public static TOptions AddOptions<TOptions>(this IServiceCollection services, IConfiguration configuration)
         where TOptions : class, IOptions, new()
     {
         var options = configuration.GetOptions<TOptions>();
-
         services.Configure<TOptions>(configuration.GetSection(options.SectionKey));
         services.AddSingleton(options);
         return options;
