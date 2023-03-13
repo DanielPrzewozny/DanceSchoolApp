@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using DanceSchoolAPI.Common.CQRSElements.Commands;
+using DanceSchoolAPI.Common.CQRSElements.Commands.Interfaces;
+using DanceSchoolAPI.Common.CQRSElements.Queries.CRUDQueries;
+using DanceSchoolAPI.Common.CQRSElements.Queries.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -7,12 +12,15 @@ namespace DanceSchoolAPI.BaseControllers;
 
 [ApiController]
 [Route("[controller]")]
-public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
+public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcherControllerBase
 {
     protected readonly ILogger<TLoggerController> logger;
 
     public BaseCRUDEntityController(
-        ILogger<TLoggerController> logger)
+        ILogger<TLoggerController> logger,
+        ICommandDispatcher commandDispatcher,
+        IQueryDispatcher queryDispatcher)
+        : base(commandDispatcher, queryDispatcher)
     {
         this.logger = logger;
     }
@@ -22,8 +30,9 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
     {
         try
         {
+            TEntity entity = await QueryAsync<GetQuery<TEntity>, TEntity>(new GetQuery<TEntity>(id));
             logger.LogInformation("Get executed");
-            return Json(new object());
+            return Json(entity);
         }
         catch (Exception ex)
         {
@@ -34,10 +43,11 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
     }
 
     [HttpPost("Browse")]
-    public async Task<IActionResult> Browse()
+    public async Task<IActionResult> Browse(BrowseQuery<TEntity> browseQuery)
     {
         try
         {
+            IEnumerable<TEntity> browseResults = await QueryAsync<BrowseQuery<TEntity>, IEnumerable<TEntity>>(browseQuery);
             logger.LogInformation($"{nameof(TEntity)} - Browse executed");
             return Ok();
         }
@@ -53,8 +63,9 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
     {
         try
         {
+            var id = await QueryAsync<CreateQuery<TEntity>, string>();
             logger.LogInformation($"{nameof(TEntity)} - Create executed");
-            return Ok(createdObject);
+            return Created(string.Empty, id);
         }
         catch (Exception ex)
         {
@@ -68,8 +79,9 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
     {
         try
         {
+            await CommandAsync(new UpdateCommand<TEntity>(updateObject));
             logger.LogInformation($"{nameof(TEntity)} - Update executed");
-            return Accepted(updateObject);
+            return Accepted();
         }
         catch (Exception ex)
         {
@@ -83,8 +95,9 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : Controller
     {
         try
         {
+            await CommandAsync(new DeleteCommand<TEntity>(id));
             logger.LogInformation($"{nameof(TEntity)} - Delete executed");
-            return Accepted(id);
+            return Accepted();
         }
         catch (Exception ex)
         {
