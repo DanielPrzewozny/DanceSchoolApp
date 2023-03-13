@@ -1,5 +1,4 @@
-﻿
-namespace DanceSchoolAPI.Extensions;
+﻿namespace DanceSchoolAPI.Common.Statics;
 
 public static class Environments
 {

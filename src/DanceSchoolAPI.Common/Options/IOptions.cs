@@ -1,4 +1,5 @@
-﻿namespace DanceSchoolAPI.Models.Options;
+﻿
+namespace DanceSchoolAPI.Common.Options;
 
 public interface IOptions
 {

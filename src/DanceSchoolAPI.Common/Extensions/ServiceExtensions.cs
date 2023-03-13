@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using DanceSchoolAPI.Models.Options;
-using DanceSchoolAPI.Modules;
+﻿using DanceSchoolAPI.Common.Modules;
+using DanceSchoolAPI.Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace DanceSchoolAPI.Extensions;
+namespace DanceSchoolAPI.Common.Extensions;
 
 public static class ServiceExtensions
 {
@@ -17,11 +16,10 @@ public static class ServiceExtensions
         return services;
     }
 
-    public static TOptions AddOptions<TOptions>(this IServiceCollection services, IConfiguration configuration, string filename = "appsettings.json")
+    public static TOptions AddOptions<TOptions>(this IServiceCollection services, IConfiguration configuration)
         where TOptions : class, IOptions, new()
     {
         var options = configuration.GetOptions<TOptions>();
-
         services.Configure<TOptions>(configuration.GetSection(options.SectionKey));
         services.AddSingleton(options);
         return options;
