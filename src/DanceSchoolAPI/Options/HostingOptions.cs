@@ -1,4 +1,4 @@
-﻿using DanceSchoolAPI.Common.Models.Options;
+using DanceSchoolAPI.Common.Options;
 
 namespace DanceSchoolAPI.Options;
 

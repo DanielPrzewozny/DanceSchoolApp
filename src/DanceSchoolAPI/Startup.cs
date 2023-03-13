@@ -1,5 +1,4 @@
 ﻿using DanceSchoolAPI.Common.Extensions;
-using DanceSchoolAPI.Common.Modules;
 using DanceSchoolAPI.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

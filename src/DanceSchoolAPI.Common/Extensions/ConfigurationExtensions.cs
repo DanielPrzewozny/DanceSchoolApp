@@ -1,7 +1,8 @@
-﻿using DanceSchoolAPI.Common.Models.Options;
+using DanceSchoolAPI.Common.Options;
 using Microsoft.Extensions.Configuration;
 
 namespace DanceSchoolAPI.Common.Extensions;
+
 public static class ConfigurationExtensions
 {
     public static TOptions GetOptions<TOptions>(this IConfiguration configuration)

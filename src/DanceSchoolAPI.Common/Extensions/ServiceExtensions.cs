@@ -1,5 +1,5 @@
-﻿using DanceSchoolAPI.Common.Models.Options;
 using DanceSchoolAPI.Common.Modules;
+using DanceSchoolAPI.Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
