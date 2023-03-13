@@ -18,9 +18,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task InsertAsync(TEntity entity)
     {
-        entity.CreatedOn = entity.CreatedOn == default
-            ? DateTimeOffset.Now
-            : entity.CreatedOn;
+        entity.CreatedOn = entity.CreatedOn == default ? DateTimeOffset.Now : entity.CreatedOn;
 
         using (IDbConnection conn = await GetConnection())
         {
@@ -43,9 +41,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task<TEntity> GetAsync(string queryFilters = "", object parameters = null)
     {
-        string query = !string.IsNullOrEmpty(queryFilters)
-            ? $"{Select} {queryFilters}"
-            : Select;
+        string query = !string.IsNullOrEmpty(queryFilters) ? $"{Select} {queryFilters}" : Select;
 
         using (IDbConnection conn = await GetConnection())
         {
@@ -55,26 +51,17 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task<IEnumerable<TEntity>> BrowseAsync(Query queryFilters = null)
     {
-        DynamicParameters parameters = new();
-        string query = queryFilters != null
-            ? $"{Browse} {queryFilters.QueryString}"
-            : Select;
-
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryAsync<TEntity>(query, queryFilters?.Parameters);
+            return await conn.QueryAsync<TEntity>(queryFilters != null ? $"{Browse} {queryFilters.QueryString}" : Select, queryFilters?.Parameters);
         }
     }
 
     public async Task<IEnumerable<TEntity>> BrowseAsync(string queryFilters = "", object parameters = null)
     {
-        string query = !string.IsNullOrEmpty(queryFilters)
-            ? $"{Browse} {queryFilters}"
-            : Select;
-
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryAsync<TEntity>(query, parameters);
+            return await conn.QueryAsync<TEntity>(!string.IsNullOrEmpty(queryFilters) ? $"{Browse} {queryFilters}" : Select, parameters);
         }
     }
 
@@ -83,11 +70,9 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task<long> CountAsync(Query queryFilters = null)
     {
-        string query = $"SELECT count(*) FROM {tableName} {queryFilters?.QueryString}";
-
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleOrDefaultAsync<long>(query, queryFilters?.Parameters);
+            return await conn.QuerySingleOrDefaultAsync<long>($"SELECT count(*) FROM {tableName} {queryFilters?.QueryString}", queryFilters?.Parameters);
         }
     }
 
@@ -106,8 +91,6 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         var idName = columnNames.Where(p => p.Key.ToLower().Equals("id")).Select(p => p.Value).FirstOrDefault();
         string updateQuery = string.Join(", ", fields.Where(u => !u.Key.Contains(idName)).Select(u => $"{u.Key}=@{u.Key}"));
 
-        string query = $"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}";
-
         foreach (var update in fields)
             parameters.Add($"@{update.Key.ToLower()}", update.Value);
 
@@ -116,41 +99,36 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
         using (IDbConnection conn = await GetConnection())
         {
-            var result = await conn.ExecuteAsync(query, parameters);
+            var result = await conn.ExecuteAsync($"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}", parameters);
         }
     }
     public async Task UpdateAsync(TEntity entity, long modifiedById)
     {
-        entity.ModifiedOn = entity.ModifiedOn == default
-            ? DateTimeOffset.Now
-            : entity.ModifiedOn;
+        entity.ModifiedOn = entity.ModifiedOn == default ? DateTimeOffset.Now : entity.ModifiedOn;
         entity.ModifiedBy = modifiedById;
 
         using (IDbConnection conn = await GetConnection())
         {
-            await conn.ExecuteAsync(Update);
+            await conn.QuerySingleOrDefaultAsync<TEntity>(Update, entity);
         }
     }
 
     public async Task RemoveAsync(Query queryFilters)
     {
-        string query = $"{Delete} {queryFilters.QueryString}";
-
         using (IDbConnection conn = await GetConnection())
         {
             var tr = conn.BeginTransaction();
-            await conn.ExecuteAsync(query, queryFilters.Parameters, tr);
+            await conn.ExecuteAsync($"{Delete} {queryFilters.QueryString}", queryFilters.Parameters, tr);
             tr.Commit();
         }
     }
 
     public async Task RemoveAsync(string queryFilters = "", object parameters = null)
     {
-        string query = $"{Delete} {queryFilters}";
         using (IDbConnection conn = await GetConnection())
         {
             var tr = conn.BeginTransaction();
-            await conn.ExecuteAsync(query, parameters);
+            await conn.ExecuteAsync($"{Delete} {queryFilters}", parameters);
             tr.Commit();
         }
     }
