@@ -36,11 +36,8 @@ public abstract class BaseSqlRepository<TEntity>
 
         Type type = typeof(TEntity);
         properties = type.GetProperties();
-        columnNames = new Dictionary<string, string>();
+        columnNames = properties.ToDictionary((PropertyInfo property) => property.Name, (PropertyInfo property) => property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name);
         tableName = type.GetCustomAttribute<TableAttribute>()?.Name ?? type.Name;
-
-        foreach (PropertyInfo property in properties)
-            columnNames[property.Name] = property.GetCustomAttribute<ColumnAttribute>()?.Name ?? property.Name;
         primaryProperty = new KeyValuePair<string, string>(nameof(EntityBaseDetails.Id), columnNames[nameof(EntityBaseDetails.Id)]);
         insertQuery = columnNames.Where(c => !updateColumns.Contains(c.Key) && c.Key != primaryProperty.Key).ToDictionary(x => x.Key, x => x.Value);
         updateQuery = columnNames.Where(c => !insertColumns.Contains(c.Key) && c.Key != primaryProperty.Key).ToDictionary(x => x.Key.ToLower(), x => x.Value);
