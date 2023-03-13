@@ -3,8 +3,7 @@ using DanceSchoolAPI.Common.Enums;
 
 namespace DanceSchoolAPI.Common.Models.Students;
 
-[Table("dbo.Users")]
-public class User : EntityBaseDetails
+public abstract class User : EntityBaseDetails
 {
     [Column("UserId")]
     new public long Id { get; set; } = -1;
@@ -13,5 +12,5 @@ public class User : EntityBaseDetails
     public string City { get; set; }
     public string Country { get; set; }
     public string ClubCardId { get; set; }
-    public UserType Type { get; set; }
+    public abstract UserRole Role { get; }
 }
