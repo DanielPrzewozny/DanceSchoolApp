@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using DanceSchoolAPI.Models.Options;
-using DanceSchoolAPI.Modules;
+﻿using DanceSchoolAPI.Common.Models.Options;
+using DanceSchoolAPI.Common.Modules;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace DanceSchoolAPI.Extensions;
+namespace DanceSchoolAPI.Common.Extensions;
 
 public static class ServiceExtensions
 {

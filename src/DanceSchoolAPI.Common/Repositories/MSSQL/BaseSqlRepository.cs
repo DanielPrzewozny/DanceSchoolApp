@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 using DanceSchoolAPI.Common.Models;
-using DanceSchoolAPI.Models.Options;
+using DanceSchoolAPI.Common.Models.Options;
 using Microsoft.Data.SqlClient;
 
 namespace DanceSchoolAPI.Common.Repositories.MSSQL;
@@ -16,7 +16,7 @@ public abstract class BaseSqlRepository<TEntity>
     protected readonly string select = "SELECT {0} FROM {1}";
     protected readonly string count = "SELECT COUNT(*) FROM {1}";
     protected readonly string browse = "SELECT COUNT(*) OVER() AS \"DataCount\", {0} FROM {1}";
-    protected readonly string insert = "INSERT INTO {0}({1}) VALUES ({2}) RETURNING {3}";
+    protected readonly string insert = "INSERT INTO {0}({1}) VALUES ({2})";
     protected readonly string update = "UPDATE {0} SET {1}";
     protected readonly string delete = "DELETE FROM {0}";
     protected readonly static string[] updateColumns = new[] { nameof(EntityBaseDetails.ModifiedBy), nameof(EntityBaseDetails.ModifiedOn) };
@@ -47,15 +47,12 @@ public abstract class BaseSqlRepository<TEntity>
         connectionString = mssqlOptions.GetConnectionString();
     }
 
-    public IDbConnection GetConnection()
+    public async Task<DbConnection> GetConnection()
     {
-        var conn = new SqlConnection();
-        conn.Open();
+        var conn = new SqlConnection(mssqlOptions.GetConnectionString());
+        await conn.OpenAsync();
         return conn;
     }
-
-    protected async Task<DbConnection> OpenConnectionAsync()
-        => new SqlConnection(mssqlOptions.GetConnectionString());
 
 
     public string Select
@@ -80,8 +77,7 @@ public abstract class BaseSqlRepository<TEntity>
     public string Insert
         => string.Format(insert, tableName,
                 string.Join(", ", insertQuery.Values),
-                string.Join(", ", insertQuery.Keys.Select(propName => $"@{propName}")),
-                primaryProperty.Value);
+                string.Join(", ", insertQuery.Keys.Select(propName => $"@{propName}")));
 
     public string Update => string.Format(update, tableName, string.Join(", ", updateQuery.Select(u => $"{u.Value}=@{u.Key}")));
 

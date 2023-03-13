@@ -1,4 +1,5 @@
-﻿using DanceSchoolAPI.Common.Models;
+﻿using System.Data.Common;
+using DanceSchoolAPI.Common.Models;
 using DanceSchoolAPI.Common.Models.Query;
 
 namespace DanceSchoolAPI.Common.Repositories.MSSQL;
@@ -14,7 +15,7 @@ public interface IMSSQLRepository<TEntity> where TEntity : EntityBaseDetails
     Task<bool> ExistsAsync(string queryFilters = "", object parameters = null);
     Task<TEntity> GetAsync(Query queryFilters = null);
     Task<TEntity> GetAsync(string queryFilters = "", object parameters = null);
-    Task<long> InsertAsync(TEntity entity, bool closeConnection = true);
+    Task<long> InsertAsync(TEntity entity, DbConnection connection = null, DbTransaction transaction = null, bool closeConnection = true);
     Task<int> RemoveAsync(string queryFilters = "", object parameters = null);
     Task<int> RemoveAsync(Query queryFilters);
     Task<TEntity> UpdateAsync(Dictionary<string, object> fields, Query queryFilters);

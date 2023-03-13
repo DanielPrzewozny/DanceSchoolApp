@@ -1,5 +1,6 @@
-﻿using DanceSchoolAPI.Extensions;
-using DanceSchoolAPI.Models.Options;
+﻿using DanceSchoolAPI.Common.Extensions;
+using DanceSchoolAPI.Common.Modules;
+using DanceSchoolAPI.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,7 @@ public class Startup
         services.AddSwagger("v1", new OpenApiInfo { Title = "DanceSchoolApp", Version = "v1" }, false);
 
         services.AddOptions<HostingOptions>(Configuration);
+        services.AddModule<RepositoriesModule>();
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     }

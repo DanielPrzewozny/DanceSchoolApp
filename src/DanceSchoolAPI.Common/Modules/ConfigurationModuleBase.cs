@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DanceSchoolAPI.Modules;
+namespace DanceSchoolAPI.Common.Modules;
 
 public abstract class ConfigurationModuleBase : IModule
 {

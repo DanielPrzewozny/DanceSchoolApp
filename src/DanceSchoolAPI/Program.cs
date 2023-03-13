@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using DanceSchoolAPI.Models.Options;
+using DanceSchoolAPI.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
@@ -56,7 +56,7 @@ public class Program
                            if (hostingOptions.UseInsecure)
                            {
                                logger.Info("Use http");
-                               if (context.HostingEnvironment.EnvironmentName == Extensions.Environments.Docker)
+                               if (context.HostingEnvironment.EnvironmentName == Common.Statics.Environments.Docker)
                                    options.Listen(IPAddress.Any, 80, listenOption => { listenOption.Protocols = HttpProtocols.Http1AndHttp2; });
                                else
                                    options.ListenAnyIP(hostingOptions.InsecurePort);
@@ -66,7 +66,7 @@ public class Program
                            {
                                logger.Info("Use https");
                                var cert = new X509Certificate2(hostingOptions.CertificatePath, hostingOptions.CertificatePassword);
-                               if (context.HostingEnvironment.EnvironmentName == Extensions.Environments.Docker)
+                               if (context.HostingEnvironment.EnvironmentName == Common.Statics.Environments.Docker)
                                    options.Listen(IPAddress.Any, 443, listenOption => listenOption.UseHttps(cert));
                                else
                                    options.ListenAnyIP(hostingOptions.SecurePort, options => options.UseHttps(cert));

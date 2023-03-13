@@ -1,8 +1,8 @@
 using System.Data;
+using System.Data.Common;
 using DanceSchoolAPI.Common.Models;
+using DanceSchoolAPI.Common.Models.Options;
 using DanceSchoolAPI.Common.Models.Query;
-using DanceSchoolAPI.Common.Repositories.MSSQL;
-using DanceSchoolAPI.Models.Options;
 using Dapper;
 
 namespace DanceSchoolAPI.Common.Repositories.MSSQL;
@@ -16,16 +16,20 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
     }
 
-    public async Task<long> InsertAsync(TEntity entity, bool closeConnection = true)
+    public async Task<long> InsertAsync(TEntity entity, DbConnection connection = null, DbTransaction transaction = null, bool closeConnection = true)
     {
         entity.CreatedOn = entity.CreatedOn == default
             ? DateTimeOffset.Now
             : entity.CreatedOn;
 
-        using (IDbConnection conn = GetConnection())
-        {
-            return await conn.QuerySingleAsync<long>(Insert, entity);
-        }
+        connection ??= transaction?.Connection ?? await GetConnection();
+        var result = await connection.QuerySingleAsync<long>(Insert, entity, transaction);
+
+        if (closeConnection && connection.State == ConnectionState.Open)
+            connection.Close();
+
+        return result;
+
     }
 
     public async Task<IEnumerable<long>> BatchInsert(IEnumerable<TEntity> entities)
@@ -40,7 +44,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         string query = $"{Select} {queryFilters?.QueryString}";
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QueryFirstOrDefaultAsync<TEntity>(query, queryFilters?.Parameters);
         }
@@ -52,7 +56,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
             ? $"{Select} {queryFilters}"
             : Select;
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QueryFirstOrDefaultAsync<TEntity>(query, parameters);
         }
@@ -65,7 +69,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
             ? $"{Browse} {queryFilters.QueryString}"
             : Select;
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QueryAsync<TEntity>(query, queryFilters?.Parameters);
         }
@@ -77,7 +81,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
             ? $"{Browse} {queryFilters}"
             : Select;
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QueryAsync<TEntity>(query, parameters);
         }
@@ -93,7 +97,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         string query = $"SELECT count(*) FROM {tableName} {queryFilters?.QueryString}";
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QuerySingleAsync<long>(query, queryFilters?.Parameters);
         }
@@ -101,7 +105,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task<long> CountAsync(string queryFilters = "", object parameters = null)
     {
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.QuerySingleAsync<long>(Count + queryFilters, parameters);
         }
@@ -125,7 +129,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
         string query = $"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}";
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             var result = await conn.ExecuteAsync(query, parameters);
         }
@@ -139,7 +143,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
             : entity.ModifiedOn;
         entity.ModifiedBy = modifiedById;
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             await conn.ExecuteAsync(Update);
         }
@@ -149,7 +153,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         string query = $"{Delete} {queryFilters.QueryString}";
 
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.ExecuteAsync(query, queryFilters.Parameters);
         }
@@ -158,7 +162,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     public async Task<int> RemoveAsync(string queryFilters = "", object parameters = null)
     {
         string query = $"{Delete} {queryFilters}";
-        using (IDbConnection conn = GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
             return await conn.ExecuteAsync(query, parameters);
         }

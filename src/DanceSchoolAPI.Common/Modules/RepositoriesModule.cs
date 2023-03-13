@@ -1,10 +1,10 @@
+using DanceSchoolAPI.Common.Extensions;
+using DanceSchoolAPI.Common.Models.Options;
 using DanceSchoolAPI.Common.Repositories.MSSQL;
-using DanceSchoolAPI.Extensions;
-using DanceSchoolAPI.Models.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DanceSchoolAPI.Modules;
+namespace DanceSchoolAPI.Common.Modules;
 
 public class RepositoriesModule : ConfigurationModuleBase
 {
