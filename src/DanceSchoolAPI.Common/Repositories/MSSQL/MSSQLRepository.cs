@@ -1,5 +1,4 @@
 using System.Data;
-using System.Data.Common;
 using DanceSchoolAPI.Common.Models;
 using DanceSchoolAPI.Common.Models.Options;
 using DanceSchoolAPI.Common.Models.Query;
@@ -97,6 +96,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
             var result = await conn.ExecuteAsync($"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}", parameters);
         }
     }
+
     public async Task UpdateAsync(TEntity entity, long modifiedById)
     {
         entity.ModifiedOn = entity.ModifiedOn == default ? DateTimeOffset.Now : entity.ModifiedOn;

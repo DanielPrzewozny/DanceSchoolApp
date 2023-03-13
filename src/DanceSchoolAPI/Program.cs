@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 
-
 namespace DanceSchoolAPI;
 
 public class Program
