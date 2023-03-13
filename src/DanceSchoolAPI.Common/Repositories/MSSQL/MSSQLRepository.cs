@@ -19,7 +19,6 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     public async Task InsertAsync(TEntity entity)
     {
         entity.CreatedOn = entity.CreatedOn == default ? DateTimeOffset.Now : entity.CreatedOn;
-
         using (IDbConnection conn = await GetConnection())
         {
             var result = await conn.QuerySingleOrDefaultAsync<TEntity>(Insert, entity);
@@ -31,21 +30,17 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
     public async Task<TEntity> GetAsync(Query queryFilters = null)
     {
-        string query = $"{Select} {queryFilters?.QueryString}";
-
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>(query, queryFilters?.Parameters);
+            return await conn.QueryFirstOrDefaultAsync<TEntity>($"{Select} {queryFilters?.QueryString}", queryFilters?.Parameters);
         }
     }
 
     public async Task<TEntity> GetAsync(string queryFilters = "", object parameters = null)
     {
-        string query = !string.IsNullOrEmpty(queryFilters) ? $"{Select} {queryFilters}" : Select;
-
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>(query, parameters);
+            return await conn.QueryFirstOrDefaultAsync<TEntity>(!string.IsNullOrEmpty(queryFilters) ? $"{Select} {queryFilters}" : Select, parameters);
         }
     }
 
