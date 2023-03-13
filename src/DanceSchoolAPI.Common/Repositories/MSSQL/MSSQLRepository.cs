@@ -103,19 +103,16 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         DynamicParameters parameters = new();
 
-        foreach (var update in fields)
-        {
-            parameters.Add($"@{update.Key.ToLower()}", update.Value);
-        }
-
-        foreach (var filter in queryFilters.Parameters.ParameterNames)
-        {
-            parameters.Add(filter, queryFilters.Parameters.Get<long>(filter));
-        }
         var idName = columnNames.Where(p => p.Key.ToLower().Equals("id")).Select(p => p.Value).FirstOrDefault();
         string updateQuery = string.Join(", ", fields.Where(u => !u.Key.Contains(idName)).Select(u => $"{u.Key}=@{u.Key}"));
 
         string query = $"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}";
+
+        foreach (var update in fields)
+            parameters.Add($"@{update.Key.ToLower()}", update.Value);
+
+        foreach (var filter in queryFilters.Parameters.ParameterNames)
+            parameters.Add(filter, queryFilters.Parameters.Get<long>(filter));
 
         using (IDbConnection conn = await GetConnection())
         {
