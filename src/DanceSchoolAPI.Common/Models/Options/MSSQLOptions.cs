@@ -1,4 +1,5 @@
-﻿
+﻿using DanceSchoolAPI.Common.Options;
+
 namespace DanceSchoolAPI.Common.Models.Options;
 
 public class MSSQLOptions : IOptions
