@@ -16,29 +16,20 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
     }
 
-    public async Task<long> InsertAsync(TEntity entity, DbConnection connection = null, DbTransaction transaction = null, bool closeConnection = true)
+    public async Task InsertAsync(TEntity entity)
     {
         entity.CreatedOn = entity.CreatedOn == default
             ? DateTimeOffset.Now
             : entity.CreatedOn;
 
-        connection ??= transaction?.Connection ?? await GetConnection();
-        var result = await connection.QuerySingleAsync<long>(Insert, entity, transaction);
-
-        if (closeConnection && connection.State == ConnectionState.Open)
-            connection.Close();
-
-        return result;
-
-    }
-
-    public async Task<IEnumerable<long>> BatchInsert(IEnumerable<TEntity> entities)
-    {
-        using (GetConnection())
+        using (IDbConnection conn = await GetConnection())
         {
-            return await Task.WhenAll(entities.Select(e => InsertAsync(e)));
+            await conn.QuerySingleOrDefaultAsync(Insert, entity);
         }
     }
+
+    public async Task BatchInsert(IEnumerable<TEntity> entities)
+        => await Task.WhenAll(entities.Select(e => InsertAsync(e)));
 
     public async Task<TEntity> GetAsync(Query queryFilters = null)
     {
@@ -87,9 +78,6 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         }
     }
 
-    public async Task<bool> ExistsAsync(Query queryFilters = null)
-        => await CountAsync(queryFilters) > 0;
-
     public async Task<bool> ExistsAsync(string queryFilters = "", object parameters = null)
         => await CountAsync(queryFilters, parameters) > 0;
 
@@ -99,7 +87,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleAsync<long>(query, queryFilters?.Parameters);
+            return await conn.QuerySingleOrDefaultAsync<long>(query, queryFilters?.Parameters);
         }
     }
 
@@ -107,11 +95,11 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleAsync<long>(Count + queryFilters, parameters);
+            return await conn.QuerySingleOrDefaultAsync<long>(Count + queryFilters, parameters);
         }
     }
 
-    public async Task<TEntity> UpdateAsync(Dictionary<string, object> fields, Query queryFilters)
+    public async Task UpdateAsync(Dictionary<string, object> fields, Query queryFilters)
     {
         DynamicParameters parameters = new();
 
@@ -133,8 +121,6 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         {
             var result = await conn.ExecuteAsync(query, parameters);
         }
-
-        return await GetAsync(queryFilters);
     }
     public async Task UpdateAsync(TEntity entity, long modifiedById)
     {
@@ -149,22 +135,26 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         }
     }
 
-    public async Task<int> RemoveAsync(Query queryFilters)
+    public async Task RemoveAsync(Query queryFilters)
     {
         string query = $"{Delete} {queryFilters.QueryString}";
 
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.ExecuteAsync(query, queryFilters.Parameters);
+            var tr = conn.BeginTransaction();
+            await conn.ExecuteAsync(query, queryFilters.Parameters, tr);
+            tr.Commit();
         }
     }
 
-    public async Task<int> RemoveAsync(string queryFilters = "", object parameters = null)
+    public async Task RemoveAsync(string queryFilters = "", object parameters = null)
     {
         string query = $"{Delete} {queryFilters}";
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.ExecuteAsync(query, parameters);
+            var tr = conn.BeginTransaction();
+            await conn.ExecuteAsync(query, parameters);
+            tr.Commit();
         }
     }
 }
