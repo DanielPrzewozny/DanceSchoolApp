@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace DanceSchoolAPI.Extensions;
+namespace DanceSchoolAPI.Common.Extensions;
 
 public static class AppBuilderExtensions
 {

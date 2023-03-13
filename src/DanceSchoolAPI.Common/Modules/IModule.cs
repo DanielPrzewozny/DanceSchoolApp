@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace DanceSchoolAPI.Modules;
+namespace DanceSchoolAPI.Common.Modules;
 
 public interface IModule
 {
