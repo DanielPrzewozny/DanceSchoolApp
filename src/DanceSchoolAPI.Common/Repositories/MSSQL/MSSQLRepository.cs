@@ -24,7 +24,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
         using (IDbConnection conn = await GetConnection())
         {
-            await conn.QuerySingleOrDefaultAsync(Insert, entity);
+            var result = await conn.QuerySingleOrDefaultAsync<TEntity>(Insert, entity);
         }
     }
 
