@@ -44,7 +44,6 @@ public abstract class BaseSqlRepository<TEntity>
         primaryProperty = new KeyValuePair<string, string>(nameof(EntityBaseDetails.Id), columnNames[nameof(EntityBaseDetails.Id)]);
         insertQuery = columnNames.Where(c => !updateColumns.Contains(c.Key) && c.Key != primaryProperty.Key).ToDictionary(x => x.Key, x => x.Value);
         updateQuery = columnNames.Where(c => !insertColumns.Contains(c.Key) && c.Key != primaryProperty.Key).ToDictionary(x => x.Key.ToLower(), x => x.Value);
-        connectionString = mssqlOptions.GetConnectionString();
     }
 
     public async Task<DbConnection> GetConnection()
