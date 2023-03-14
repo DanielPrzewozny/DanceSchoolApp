@@ -6,7 +6,7 @@ using DanceSchoolAPI.Common.Models;
 using DanceSchoolAPI.Common.Models.Options;
 using Microsoft.Data.SqlClient;
 
-namespace DanceSchoolAPI.Common.Repositories.MSSQL;
+namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 
 public abstract class BaseSqlRepository<TEntity>
     where TEntity : EntityBaseDetails
@@ -16,7 +16,7 @@ public abstract class BaseSqlRepository<TEntity>
     protected readonly string select = "SELECT {0} FROM {1}";
     protected readonly string count = "SELECT COUNT(*) FROM {1}";
     protected readonly string browse = "SELECT COUNT(*) OVER() AS \"DataCount\", {0} FROM {1}";
-    protected readonly string insert = "INSERT INTO {0}({1}) VALUES ({2}); SELECT * FROM {0} WHERE Id = (SELECT CAST(scope_identity() as int))";
+    protected readonly string insert = "INSERT INTO {0}({1}) VALUES ({2}); SELECT * FROM {0} WHERE Id = (SELECT CAST(scope_identity() as int));";
     protected readonly string update = "UPDATE {0} SET {1}";
     protected readonly string delete = "DELETE FROM {0}";
     protected readonly static string[] updateColumns = new[] { nameof(EntityBaseDetails.ModifiedBy), nameof(EntityBaseDetails.ModifiedOn) };

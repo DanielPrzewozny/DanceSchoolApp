@@ -25,7 +25,8 @@ public abstract class CQDispatcherControllerBase : Controller
         => await CommandAsync(new TCommand());
 
     protected async Task<TResult> QueryAsync<TCommand, TResult>(TCommand command)
-        where TCommand : IQuery<TResult> => await queryDispatcher.QueryAsync<TCommand, TResult>(command);
+        where TCommand : IQuery<TResult>
+        => await queryDispatcher.QueryAsync<TCommand, TResult>(command);
 
     protected async Task<TResult> QueryAsync<TCommand, TResult>()
         where TCommand : IQuery<TResult>, new()

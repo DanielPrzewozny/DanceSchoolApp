@@ -1,8 +1,11 @@
+using System.Reflection;
 using DanceSchoolAPI.Common.Modules;
 using DanceSchoolAPI.Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using NetCore.AutoRegisterDi;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace DanceSchoolAPI.Common.Extensions;
 
@@ -60,6 +63,14 @@ public static class ServiceExtensions
                 );
             }
         });
+        return services;
+    }
+
+    public static IServiceCollection AddAssemblyTypes(this IServiceCollection services, Type fromType, ServiceLifetime lifetime)
+    {
+        foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            services.RegisterAssemblyPublicNonGenericClasses(assembly).Where(o => o.IsAssignableAs(fromType)).AsPublicImplementedInterfaces(lifetime);
+
         return services;
     }
 }

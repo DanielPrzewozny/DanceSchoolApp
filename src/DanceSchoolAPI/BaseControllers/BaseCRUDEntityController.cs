@@ -26,7 +26,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(string id)
+    public async Task<IActionResult> Get(long id)
     {
         try
         {
@@ -49,7 +49,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
         {
             IEnumerable<TEntity> browseResults = await QueryAsync<BrowseQuery<TEntity>, IEnumerable<TEntity>>(browseQuery);
             logger.LogInformation($"{nameof(TEntity)} - Browse executed");
-            return Ok();
+            return Ok(browseResults);
         }
         catch (Exception ex)
         {
@@ -63,7 +63,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
     {
         try
         {
-            var id = await QueryAsync<CreateQuery<TEntity>, string>();
+            var id = await QueryAsync<CreateQuery<TEntity>, long>(new CreateQuery<TEntity>(createdObject));
             logger.LogInformation($"{nameof(TEntity)} - Create executed");
             return Created(string.Empty, id);
         }
@@ -91,7 +91,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(long id)
     {
         try
         {

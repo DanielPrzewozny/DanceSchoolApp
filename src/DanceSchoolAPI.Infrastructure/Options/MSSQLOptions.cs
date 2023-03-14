@@ -1,5 +1,7 @@
 ﻿
-namespace DanceSchoolAPI.Common.Options;
+using DanceSchoolAPI.Common.Options;
+
+namespace DanceSchoolAPI.Infrastructure.Options;
 
 public class MSSQLOptions : IOptions
 {

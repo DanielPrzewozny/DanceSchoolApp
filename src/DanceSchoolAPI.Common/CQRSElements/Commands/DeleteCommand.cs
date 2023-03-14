@@ -4,7 +4,7 @@ namespace DanceSchoolAPI.Common.CQRSElements.Commands;
 
 public class DeleteCommand<TEntity> : ICommand
 {
-    public DeleteCommand(string id) => Id = id;
+    public DeleteCommand(long id) => Id = id;
 
-    public string Id { get; set; }
+    public long Id { get; set; }
 }

@@ -7,6 +7,5 @@ namespace DanceSchoolAPI.Common.Models.Teacher;
 [Table("dbo.Teachers")]
 public class Teacher : User
 {
-    public override UserRole Role => UserRole.Teacher;
-    public DanceGroup DanceGroups { get; set; }
+    public string DanceGroup { get; set; }
 }

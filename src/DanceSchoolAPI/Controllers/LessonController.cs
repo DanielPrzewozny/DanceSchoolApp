@@ -5,14 +5,14 @@ using DanceSchoolAPI.Common.Models.Students;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DanceSchoolAPI.Controllers.Apprentice;
+namespace DanceSchoolAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ApprenticeController : BaseCRUDEntityController<User, ApprenticeController>
+public class LessonController : BaseCRUDEntityController<User, LessonController>
 {
-    public ApprenticeController(
-        ILogger<ApprenticeController> logger,
+    public LessonController(
+        ILogger<LessonController> logger,
         ICommandDispatcher commandDispatcher,
         IQueryDispatcher queryDispatcher)
         : base(logger, commandDispatcher, queryDispatcher)
