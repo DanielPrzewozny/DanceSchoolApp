@@ -1,7 +1,6 @@
 using System.Data;
 using DanceSchoolAPI.Common.Models;
 using DanceSchoolAPI.Common.Models.Options;
-using DanceSchoolAPI.Common.Models.Query;
 using Dapper;
 
 namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
@@ -25,107 +24,45 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         }
     }
 
-    public async Task BatchInsert(IEnumerable<TEntity> entities)
-        => await Task.WhenAll(entities.Select(e => InsertAsync(e)));
-
-    public async Task<TEntity> GetAsync(Query queryFilters = null)
+    public async Task<TEntity> GetAsync(long id)
     {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>($"{Select} {queryFilters?.QueryString}", queryFilters?.Parameters);
-        }
-    }
-
-    public async Task<TEntity> GetAsync(string queryFilters = "", object parameters = null)
-    {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QueryFirstOrDefaultAsync<TEntity>(!string.IsNullOrEmpty(queryFilters) ? $"{Select} {queryFilters}" : Select, parameters);
-        }
-    }
-
-    public async Task<IEnumerable<TEntity>> BrowseAsync(Query queryFilters = null)
-    {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QueryAsync<TEntity>(queryFilters != null ? $"{Browse} {queryFilters.QueryString}" : Select, queryFilters?.Parameters);
-        }
-    }
-
-    public async Task<IEnumerable<TEntity>> BrowseAsync(string queryFilters = "", object parameters = null)
-    {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QueryAsync<TEntity>(!string.IsNullOrEmpty(queryFilters) ? $"{Browse} {queryFilters}" : Select, parameters);
-        }
-    }
-
-    public async Task<bool> ExistsAsync(string queryFilters = "", object parameters = null)
-        => await CountAsync(queryFilters, parameters) > 0;
-
-    public async Task<long> CountAsync(Query queryFilters = null)
-    {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QuerySingleOrDefaultAsync<long>($"SELECT count(*) FROM {tableName} {queryFilters?.QueryString}", queryFilters?.Parameters);
-        }
-    }
-
-    public async Task<long> CountAsync(string queryFilters = "", object parameters = null)
-    {
-        using (IDbConnection conn = await GetConnection())
-        {
-            return await conn.QuerySingleOrDefaultAsync<long>($"{Count}{queryFilters}", parameters);
-        }
-    }
-
-    public async Task UpdateAsync(Dictionary<string, object> fields, Query queryFilters)
-    {
-        DynamicParameters parameters = new();
-
-        var idName = columnNames.Where(p => p.Key.ToLower().Equals("id")).Select(p => p.Value).FirstOrDefault();
-        string updateQuery = string.Join(", ", fields.Where(u => !u.Key.Contains(idName)).Select(u => $"{u.Key}=@{u.Key}"));
-
-        foreach (var update in fields)
-            parameters.Add($"@{update.Key.ToLower()}", update.Value);
-
-        foreach (var filter in queryFilters.Parameters.ParameterNames)
-            parameters.Add(filter, queryFilters.Parameters.Get<long>(filter));
+        DynamicParameters paramGet = new DynamicParameters();
+        paramGet.Add("@id", id);
 
         using (IDbConnection conn = await GetConnection())
         {
-            var result = await conn.ExecuteAsync($"UPDATE {tableName} SET {updateQuery} {queryFilters.QueryString}", parameters);
+            return await conn.QuerySingleOrDefaultAsync<TEntity>($"{Select} WHERE Id=@Id;", paramGet);
         }
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity, Query queryFilters, long modifiedById)
+    public async Task<IEnumerable<TEntity>> SelectAsync()
+    {
+        using (IDbConnection conn = await GetConnection())
+        {
+            return await conn.QueryAsync<TEntity>(Select);
+        }
+    }
+
+    public async Task<TEntity> UpdateAsync(TEntity entity, long modifiedById)
     {
         entity.ModifiedOn = entity.ModifiedOn == default ? DateTimeOffset.Now : entity.ModifiedOn;
         entity.ModifiedBy = modifiedById;
 
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleOrDefaultAsync<TEntity>(Update, entity);
+            return await conn.QuerySingleOrDefaultAsync<TEntity>
+                ($"{Update} WHERE Id=@Id; SELECT * FROM {tableName} WHERE Id=@Id;", entity);
         }
     }
 
-    public async Task RemoveAsync(Query queryFilters)
+    public async Task DeleteAsync(long id)
     {
-        using (IDbConnection conn = await GetConnection())
-        {
-            var tr = conn.BeginTransaction();
-            await conn.ExecuteAsync($"{Delete} {queryFilters.QueryString}", queryFilters.Parameters, tr);
-            tr.Commit();
-        }
-    }
+        DynamicParameters paramDelete = new DynamicParameters();
+        paramDelete.Add("@id", id);
 
-    public async Task RemoveAsync(string queryFilters = "", object parameters = null)
-    {
         using (IDbConnection conn = await GetConnection())
         {
-            var tr = conn.BeginTransaction();
-            await conn.ExecuteAsync($"{Delete} {queryFilters}", parameters);
-            tr.Commit();
+            await conn.ExecuteAsync($"{Delete} WHERE Id=@id;", paramDelete);
         }
     }
 }

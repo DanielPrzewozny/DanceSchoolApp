@@ -1,7 +1,5 @@
 ﻿using DanceSchoolAPI.Common.Models.Apprentice;
-using DanceSchoolAPI.Common.Models.Query;
 using DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
-using Dapper;
 
 namespace DanceSchoolAPI.Infrastructure.Services;
 
@@ -18,6 +16,15 @@ public class ApprenticeService : IApprenticeService
     public async Task<long> CreateAsync(Apprentice apprenticeData)
         => await apprenticeRepository.InsertAsync(apprenticeData);
 
-    public async Task<Apprentice> GetAsync(long apprenticeId)
-        => await apprenticeRepository.GetAsync("WHERE Id = @Id", new DynamicParameters(new { Id = apprenticeId }));
+    public async Task<Apprentice> GetAsync(long id)
+        => await apprenticeRepository.GetAsync(id);
+
+    public async Task<IEnumerable<Apprentice>> BrowseAsync()
+        => await apprenticeRepository.SelectAsync();
+
+    public async Task<Apprentice> UpdateAsync(Apprentice apprenticeData)
+        => await apprenticeRepository.UpdateAsync(apprenticeData, 0);
+
+    public async Task DeleteAsync(long id)
+        => await apprenticeRepository.DeleteAsync(id);
 }

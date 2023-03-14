@@ -1,20 +1,11 @@
 ﻿using DanceSchoolAPI.Common.Models;
-using DanceSchoolAPI.Common.Models.Query;
 
 namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 public interface IMSSQLRepository<TEntity> where TEntity : EntityBaseDetails
 {
-    Task BatchInsert(IEnumerable<TEntity> entities);
-    Task<IEnumerable<TEntity>> BrowseAsync(Query queryFilters = null);
-    Task<IEnumerable<TEntity>> BrowseAsync(string queryFilters = "", object parameters = null);
-    Task<long> CountAsync(Query queryFilters = null);
-    Task<long> CountAsync(string queryFilters = "", object parameters = null);
-    Task<bool> ExistsAsync(string queryFilters = "", object parameters = null);
-    Task<TEntity> GetAsync(Query queryFilters = null);
-    Task<TEntity> GetAsync(string queryFilters = "", object parameters = null);
+    Task<IEnumerable<TEntity>> SelectAsync();
+    Task<TEntity> GetAsync(long id);
     Task<long> InsertAsync(TEntity entity);
-    Task RemoveAsync(string queryFilters = "", object parameters = null);
-    Task RemoveAsync(Query queryFilters);
-    Task UpdateAsync(Dictionary<string, object> fields, Query queryFilters);
-    Task<TEntity> UpdateAsync(TEntity entity, Query queryFilters, long modifiedById);
+    Task<TEntity> UpdateAsync(TEntity entity, long modifiedById);
+    Task DeleteAsync(long id);
 }

@@ -1,10 +1,9 @@
-
 using DanceSchoolAPI.Common.CQRSElements.Queries.CRUDQueries;
 using DanceSchoolAPI.Common.CQRSElements.Queries.Interfaces;
 using DanceSchoolAPI.Common.Models.Apprentice;
 using DanceSchoolAPI.Infrastructure.Services;
 
-namespace DanceSchoolAPI.Infrastructure.Handlers.Queries.ApprenticeHandlers;
+namespace DanceSchoolAPI.Infrastructure.Handlers.ApprenticeHandlers;
 
 public class CreateApprenticeHandler : IQueryHandler<CreateQuery<Apprentice>, long>
 {
@@ -15,5 +14,5 @@ public class CreateApprenticeHandler : IQueryHandler<CreateQuery<Apprentice>, lo
         this.apprenticeService = apprenticeService;
     }
 
-    public async Task<long> HandleAsync(CreateQuery<Apprentice> command) => await this.apprenticeService.CreateAsync(command.Value);
+    public async Task<long> HandleAsync(CreateQuery<Apprentice> command) => await apprenticeService.CreateAsync(command.Value);
 }

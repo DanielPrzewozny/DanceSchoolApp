@@ -5,7 +5,7 @@ using DanceSchoolAPI.Common.Models.Students;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DanceSchoolAPI.Controllers.Teacher;
+namespace DanceSchoolAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
