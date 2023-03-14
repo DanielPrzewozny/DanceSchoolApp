@@ -3,9 +3,6 @@
     "DanceSchoolAPI": {
       "commandName": "Project",
       "launchBrowser": true,
-      "environmentVariables": {
-        
-      },
       "dotnetRunMessages": true
     },
     "Docker": {

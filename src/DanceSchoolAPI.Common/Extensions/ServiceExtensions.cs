@@ -1,4 +1,4 @@
-﻿using DanceSchoolAPI.Common.Modules;
+using DanceSchoolAPI.Common.Modules;
 using DanceSchoolAPI.Common.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

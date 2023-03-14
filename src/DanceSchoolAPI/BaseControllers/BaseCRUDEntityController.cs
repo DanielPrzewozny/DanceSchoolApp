@@ -58,7 +58,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
         }
     }
 
-    [HttpPost("Create")]
+    [HttpPut("Create")]
     public async Task<IActionResult> Create(TEntity createdObject)
     {
         try
