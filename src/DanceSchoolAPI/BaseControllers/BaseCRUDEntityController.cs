@@ -26,7 +26,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(string id)
+    public async Task<IActionResult> Get(long id)
     {
         try
         {
@@ -63,7 +63,7 @@ public class BaseCRUDEntityController<TEntity, TLoggerController> : CQDispatcher
     {
         try
         {
-            var id = await QueryAsync<CreateQuery<TEntity>, string>();
+            var id = await QueryAsync<CreateQuery<TEntity>, long>(new CreateQuery<TEntity>(createdObject));
             logger.LogInformation($"{nameof(TEntity)} - Create executed");
             return Created(string.Empty, id);
         }

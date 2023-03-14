@@ -4,7 +4,7 @@ using DanceSchoolAPI.Common.Models.Options;
 using DanceSchoolAPI.Common.Models.Query;
 using Dapper;
 
-namespace DanceSchoolAPI.Common.Repositories.MSSQL;
+namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 
 public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLRepository<TEntity>
     where TEntity : EntityBaseDetails
@@ -15,12 +15,13 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
     }
 
-    public async Task InsertAsync(TEntity entity)
+    public async Task<long> InsertAsync(TEntity entity)
     {
         entity.CreatedOn = entity.CreatedOn == default ? DateTimeOffset.Now : entity.CreatedOn;
         using (IDbConnection conn = await GetConnection())
         {
             var result = await conn.QuerySingleOrDefaultAsync<TEntity>(Insert, entity);
+            return result.Id;
         }
     }
 
@@ -74,7 +75,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleOrDefaultAsync<long>(Count + queryFilters, parameters);
+            return await conn.QuerySingleOrDefaultAsync<long>($"{Count}{queryFilters}", parameters);
         }
     }
 
@@ -97,14 +98,14 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         }
     }
 
-    public async Task UpdateAsync(TEntity entity, long modifiedById)
+    public async Task<TEntity> UpdateAsync(TEntity entity, Query queryFilters, long modifiedById)
     {
         entity.ModifiedOn = entity.ModifiedOn == default ? DateTimeOffset.Now : entity.ModifiedOn;
         entity.ModifiedBy = modifiedById;
 
         using (IDbConnection conn = await GetConnection())
         {
-            await conn.QuerySingleOrDefaultAsync<TEntity>(Update, entity);
+            return await conn.QuerySingleOrDefaultAsync<TEntity>(Update, entity);
         }
     }
 

@@ -1,15 +1,15 @@
 using DanceSchoolAPI.BaseControllers;
 using DanceSchoolAPI.Common.CQRSElements.Commands.Interfaces;
 using DanceSchoolAPI.Common.CQRSElements.Queries.Interfaces;
-using DanceSchoolAPI.Common.Models.Students;
+using DanceSchoolAPI.Common.Models.Apprentice;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DanceSchoolAPI.Controllers.Apprentice;
+namespace DanceSchoolAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ApprenticeController : BaseCRUDEntityController<User, ApprenticeController>
+public class ApprenticeController : BaseCRUDEntityController<Apprentice, ApprenticeController>
 {
     public ApprenticeController(
         ILogger<ApprenticeController> logger,

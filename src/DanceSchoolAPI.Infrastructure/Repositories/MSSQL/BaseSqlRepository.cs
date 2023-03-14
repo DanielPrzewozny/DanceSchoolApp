@@ -6,7 +6,7 @@ using DanceSchoolAPI.Common.Models;
 using DanceSchoolAPI.Common.Models.Options;
 using Microsoft.Data.SqlClient;
 
-namespace DanceSchoolAPI.Common.Repositories.MSSQL;
+namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 
 public abstract class BaseSqlRepository<TEntity>
     where TEntity : EntityBaseDetails

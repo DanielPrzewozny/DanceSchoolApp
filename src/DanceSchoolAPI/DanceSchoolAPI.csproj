@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DanceSchoolAPI.Common\DanceSchoolAPI.Common.csproj" />
+		<ProjectReference Include="..\DanceSchoolAPI.Infrastructure\DanceSchoolAPI.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
