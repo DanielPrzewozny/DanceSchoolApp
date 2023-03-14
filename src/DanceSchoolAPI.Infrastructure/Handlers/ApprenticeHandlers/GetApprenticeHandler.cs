@@ -1,5 +1,3 @@
-using DanceSchoolAPI.Common.CQRSElements.Commands;
-using DanceSchoolAPI.Common.CQRSElements.Commands.Interfaces;
 using DanceSchoolAPI.Common.CQRSElements.Queries.CRUDQueries;
 using DanceSchoolAPI.Common.CQRSElements.Queries.Interfaces;
 using DanceSchoolAPI.Common.Models.Apprentice;
