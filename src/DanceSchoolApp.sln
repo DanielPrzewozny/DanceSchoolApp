@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DanceSchoolAPI", "DanceSchoolAPI\DanceSchoolAPI.csproj", "{96EEE52E-BABD-44F2-A7D5-3839E29F748E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{99213E1F-E752-40B6-BD11-4B9D8F7BC52F} = {99213E1F-E752-40B6-BD11-4B9D8F7BC52F}
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD} = {BAC546BC-EE77-46EA-A45C-D520B1310EFD}
 	EndProjectSection
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{5DE50C61-02F6-4780-A711-32450DBCD7CB}"
@@ -15,11 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DanceSchoolAPI.Common", "Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DanceSchoolAPI.Infrastructure", "DanceSchoolAPI.Infrastructure\DanceSchoolAPI.Infrastructure.csproj", "{99213E1F-E752-40B6-BD11-4B9D8F7BC52F}"
 	ProjectSection(ProjectDependencies) = postProject
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD} = {BAC546BC-EE77-46EA-A45C-D520B1310EFD}
 		{F7865374-19E5-4F6B-AA51-683E321891AA} = {F7865374-19E5-4F6B-AA51-683E321891AA}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DanceSchoolAPI.Core", "..\DanceSchoolAPI.Core\DanceSchoolAPI.Core.csproj", "{BAC546BC-EE77-46EA-A45C-D520B1310EFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +39,6 @@ Global
 		{99213E1F-E752-40B6-BD11-4B9D8F7BC52F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99213E1F-E752-40B6-BD11-4B9D8F7BC52F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99213E1F-E752-40B6-BD11-4B9D8F7BC52F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAC546BC-EE77-46EA-A45C-D520B1310EFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
