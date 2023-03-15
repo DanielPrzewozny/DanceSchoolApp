@@ -1,6 +1,6 @@
 ﻿using DanceSchoolAPI.Common.Models.Apprentice;
 
-namespace DanceSchoolAPI.Infrastructure.Services;
+namespace DanceSchoolAPI.Infrastructure.Services.Interfaces;
 public interface IApprenticeService
 {
     Task<long> CreateAsync(Apprentice apprenticeData);

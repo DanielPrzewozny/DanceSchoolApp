@@ -2,7 +2,7 @@ using System;
 using DanceSchoolAPI.Common.CQRSElements.Queries.CRUDQueries;
 using DanceSchoolAPI.Common.CQRSElements.Queries.Interfaces;
 using DanceSchoolAPI.Common.Models.Apprentice;
-using DanceSchoolAPI.Infrastructure.Services;
+using DanceSchoolAPI.Infrastructure.Services.Interfaces;
 
 namespace DanceSchoolAPI.Infrastructure.Handlers.ApprenticeHandlers;
 

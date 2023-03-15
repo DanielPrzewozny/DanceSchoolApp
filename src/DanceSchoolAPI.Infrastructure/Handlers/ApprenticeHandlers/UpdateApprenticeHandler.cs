@@ -1,7 +1,7 @@
 using DanceSchoolAPI.Common.CQRSElements.Commands;
 using DanceSchoolAPI.Common.CQRSElements.Commands.Interfaces;
 using DanceSchoolAPI.Common.Models.Apprentice;
-using DanceSchoolAPI.Infrastructure.Services;
+using DanceSchoolAPI.Infrastructure.Services.Interfaces;
 
 namespace DanceSchoolAPI.Infrastructure.Handlers.ApprenticeHandlers;
 
