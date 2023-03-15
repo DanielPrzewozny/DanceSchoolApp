@@ -5,8 +5,6 @@ namespace DanceSchoolAPI.Common.Models.Students;
 
 public class User : EntityBaseDetails
 {
-    [Column("UserId")]
-    new public long Id { get; set; } = -1;
     public string Name { get; set; }
     public string Surname { get; set; }
     public string City { get; set; }

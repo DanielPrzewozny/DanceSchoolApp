@@ -8,4 +8,5 @@ namespace DanceSchoolAPI.Common.Models.Teacher;
 public class Teacher : User
 {
     public string DanceGroup { get; set; }
+    new public string Role => "Teacher";
 }
