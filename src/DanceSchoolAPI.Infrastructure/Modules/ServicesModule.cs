@@ -12,5 +12,6 @@ public class ServicesModule : IModule
         services.AddSingleton<IApprenticeService, ApprenticeService>();
         services.AddSingleton<ILessonService, LessonService>();
         services.AddSingleton<ITeacherService, TeacherService>();
+        services.AddSingleton<IClubCardService, ClubCardService>();
     }
 }
