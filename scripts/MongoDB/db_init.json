@@ -1,0 +1,59 @@
+[
+	{
+		"createUser": "dp",
+		"pwd": "password",
+		"roles": [
+			{
+				"role": "dbOwner",
+				"db": "ThisProject"
+			}
+		]
+	},
+	{
+		"create": "Documents",
+		"validator": {
+			"$jsonSchema": {
+				"bsonType": [
+					"object"
+				],
+				"title": "Document Object Validation",
+				"required": [
+					"address",
+					"major",
+					"name",
+					"year"
+				],
+				"properties": {
+					"name": {
+						"bsonType": [
+							"string"
+						],
+						"maxLength": 8,
+						"description": "'name' must be a string and is required"
+					},
+					"year": {
+						"bsonType": [
+							"int"
+						],
+						"minimum": 2017,
+						"maximum": 3017,
+						"description": "'year' must be an integer in [ 2017, 3017 ] and is required"
+					}
+				}
+			}
+		}
+	},
+	{
+		"createIndexes": "Documents",
+		"indexes": [
+			{
+				"key": {
+					"major": 1,
+					"name": 1
+				},
+				"name": "major_name",
+				"unique": true
+			}
+		]
+	}
+]
