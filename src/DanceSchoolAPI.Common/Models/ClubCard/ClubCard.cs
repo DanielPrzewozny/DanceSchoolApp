@@ -7,8 +7,7 @@ namespace DanceSchoolAPI.Common.Models.ClubCard;
 public class ClubCard : EntityBaseDetails
 {
     public long UserId { get; set; }
-    public DanceGroup DanceGroup { get; set; }
-    public List<long> LessonsIds { get; set; }
+    public string DanceGroup { get; set; }
     public DateTimeOffset? ValidFromDate { get; set; }
     public DateTimeOffset? ExpirationDate { get; set; }
 }
