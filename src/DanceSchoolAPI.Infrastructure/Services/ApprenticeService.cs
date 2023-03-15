@@ -1,5 +1,6 @@
 ﻿using DanceSchoolAPI.Common.Models.Apprentice;
 using DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
+using DanceSchoolAPI.Infrastructure.Services.Interfaces;
 
 namespace DanceSchoolAPI.Infrastructure.Services;
 
