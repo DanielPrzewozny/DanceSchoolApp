@@ -8,4 +8,5 @@ public interface IMSSQLRepository<TEntity> where TEntity : EntityBaseDetails
     Task<long> InsertAsync(TEntity entity);
     Task<TEntity> UpdateAsync(TEntity entity, long modifiedById);
     Task DeleteAsync(long id);
+    Task ExecuteQueriesAsync(IEnumerable<string> query);
 }
