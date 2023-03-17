@@ -23,7 +23,6 @@ public static class ServiceExtensions
         where TOptions : class, IOptions, new()
     {
         var options = configuration.GetOptions<TOptions>();
-        services.Configure<TOptions>(configuration.GetSection(options.SectionKey));
         services.AddSingleton(options);
         return options;
     }
