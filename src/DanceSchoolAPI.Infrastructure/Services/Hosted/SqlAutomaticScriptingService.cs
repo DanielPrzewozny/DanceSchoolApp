@@ -41,9 +41,11 @@ public class SqlAutomaticScriptingService : IHostedService, IDisposable
             await RunScriptsFromFileAsync(mssqlScriptsOptions.SchemaPath);
             await RunScriptsFromFileAsync(mssqlScriptsOptions.InitPath);
         }
+
+        await RunScriptsFromFolderAsync(ver?.LastOrDefault());
     }
 
-    public async Task RunScriptsFromFileAsync(string scriptPath)
+    private async Task RunScriptsFromFileAsync(string scriptPath)
     {
         var listOfqueries = File.Exists(scriptPath)
             ? Regex.Replace(string.Join(" ", await File.ReadAllLinesAsync(scriptPath)), @"[\r|\n|\t]", " ")
@@ -52,8 +54,26 @@ public class SqlAutomaticScriptingService : IHostedService, IDisposable
         .ToList()
         : null;
 
-        if (listOfqueries?.Any() is not null)
+        if (listOfqueries is not null && listOfqueries.Any())
             await versionRepository.ExecuteQueriesAsync(listOfqueries);
+    }
+
+    private async Task RunScriptsFromFolderAsync(DboVersion? actualVersion = null)
+    {
+        actualVersion ??= (await versionRepository.SelectAsync()).LastOrDefault();
+
+        if (!Version.TryParse(actualVersion?.Version, out Version? ver))
+            return;
+
+        var listOfScripts = Directory.Exists(mssqlScriptsOptions.ScriptsPath)
+            ? Directory.GetFiles(mssqlScriptsOptions.ScriptsPath)
+                .Where(v => Version.TryParse(Path.GetFileNameWithoutExtension(v), out Version? nameV)
+                    && nameV > ver).ToList()
+            : null;
+
+        if (listOfScripts is not null && listOfScripts.Any())
+            foreach (var script in listOfScripts)
+                await RunScriptsFromFileAsync(script);
     }
 }
 

@@ -7,5 +7,5 @@ namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 [Table("dbo.Version")]
 public class DboVersion : EntityBaseDetails
 {
-    public long? Version { get; set; }
+    public string Version { get; set; }
 }

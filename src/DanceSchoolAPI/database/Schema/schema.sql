@@ -1,7 +1,7 @@
 CREATE TABLE dbo.Version
 	(
 	Id bigint IDENTITY(1,1) NOT NULL,
-	Version bigint NOT NULL,
+	Version varchar(50) NOT NULL,
 	IsValid bit NULL,
 	ModifiedOn datetimeoffset(7) NULL,
 	ModifiedBy bigint NULL,
@@ -13,7 +13,7 @@ CREATE TABLE dbo.Version
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY];
 
-INSERT INTO dbo.Version (Version, IsValid, ModifiedOn, ModifiedBy, CreatedOn, CreatedBy) VALUES ('0', 1, GETDATE(), 0, GETDATE(), 0);
+INSERT INTO dbo.Version (Version, IsValid, ModifiedOn, ModifiedBy, CreatedOn, CreatedBy) VALUES ('1.0.0', 1, GETDATE(), 0, GETDATE(), 0);
 
 CREATE TABLE dbo.Lessons
 	(
