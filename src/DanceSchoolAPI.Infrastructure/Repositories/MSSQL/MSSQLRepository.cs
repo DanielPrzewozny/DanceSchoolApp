@@ -1,17 +1,22 @@
 using System.Data;
+using System.Text.RegularExpressions;
 using DanceSchoolAPI.Common.Models;
-using DanceSchoolAPI.Common.Models.Options;
+using DanceSchoolAPI.Infrastructure.Options;
 using Dapper;
+using Microsoft.Extensions.Logging;
 
 namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 
 public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLRepository<TEntity>
     where TEntity : EntityBaseDetails
 {
-
-    public MSSQLRepository(MSSQLOptions mssqlOptions)
+    private readonly ILogger<MSSQLRepository<TEntity>> logger;
+    public MSSQLRepository(
+        MSSQLOptions mssqlOptions,
+        ILogger<MSSQLRepository<TEntity>> logger)
         : base(mssqlOptions)
     {
+        this.logger = logger;
     }
 
     public async Task<long> InsertAsync(TEntity entity)
@@ -39,7 +44,15 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryAsync<TEntity>(Select);
+            try
+            {
+                return await conn.QueryAsync<TEntity>(Select);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
+            return null;
         }
     }
 
@@ -63,6 +76,25 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
         using (IDbConnection conn = await GetConnection())
         {
             await conn.ExecuteAsync($"{Delete} WHERE Id=@id;", paramDelete);
+        }
+    }
+
+    public async Task ExecuteQueriesAsync(IEnumerable<string> listOfScripts)
+    {
+        using (IDbConnection conn = await GetConnection())
+        {
+            foreach (var script in listOfScripts)
+            {
+                try
+                {
+                    if (!string.IsNullOrEmpty(script))
+                        await conn.ExecuteAsync(script);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message);
+                }
+            }
         }
     }
 }

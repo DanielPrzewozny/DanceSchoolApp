@@ -3,7 +3,7 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 using DanceSchoolAPI.Common.Models;
-using DanceSchoolAPI.Common.Models.Options;
+using DanceSchoolAPI.Infrastructure.Options;
 using Microsoft.Data.SqlClient;
 
 namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;

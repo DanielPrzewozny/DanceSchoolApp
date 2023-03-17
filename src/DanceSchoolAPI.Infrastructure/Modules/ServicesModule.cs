@@ -1,5 +1,6 @@
 using DanceSchoolAPI.Common.Modules;
 using DanceSchoolAPI.Infrastructure.Services;
+using DanceSchoolAPI.Infrastructure.Services.Hosted;
 using DanceSchoolAPI.Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,5 +14,7 @@ public class ServicesModule : IModule
         services.AddSingleton<ILessonService, LessonService>();
         services.AddSingleton<ITeacherService, TeacherService>();
         services.AddSingleton<IClubCardService, ClubCardService>();
+
+        services.AddHostedService<SqlAutomaticScriptingService>();
     }
 }
