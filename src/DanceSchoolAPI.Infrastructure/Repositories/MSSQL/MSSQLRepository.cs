@@ -10,13 +10,13 @@ namespace DanceSchoolAPI.Infrastructure.Repositories.MSSQL;
 public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLRepository<TEntity>
     where TEntity : EntityBaseDetails
 {
-    private readonly ILogger<MSSQLRepository<TEntity>> _logger;
+    private readonly ILogger<MSSQLRepository<TEntity>> logger;
     public MSSQLRepository(
         MSSQLOptions mssqlOptions,
-        ILogger<MSSQLRepository<TEntity>> _logger)
+        ILogger<MSSQLRepository<TEntity>> logger)
         : base(mssqlOptions)
     {
-        this._logger = _logger;
+        this.logger = logger;
     }
 
     public async Task<long> InsertAsync(TEntity entity)
@@ -44,7 +44,15 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
     {
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QueryAsync<TEntity>(Select);
+            try
+            {
+                return await conn.QueryAsync<TEntity>(Select);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
+            return null;
         }
     }
 
@@ -84,7 +92,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message);
+                    logger.LogError(ex.Message);
                 }
             }
         }

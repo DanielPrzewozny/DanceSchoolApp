@@ -8,12 +8,12 @@ namespace DanceSchoolAPI.Infrastructure.Services.Hosted;
 
 public class SqlAutomaticScriptingService : IHostedService, IDisposable
 {
-    private readonly IMSSQLRepository<Repositories.MSSQL.Version> versionRepository;
+    private readonly IMSSQLRepository<DboVersion> versionRepository;
     private readonly ILogger<SqlAutomaticScriptingService> logger;
     private readonly MSSQLScriptsOptions mssqlScriptsOptions;
 
     public SqlAutomaticScriptingService(
-        IMSSQLRepository<Repositories.MSSQL.Version> versionRepository,
+        IMSSQLRepository<DboVersion> versionRepository,
         ILogger<SqlAutomaticScriptingService> logger,
         MSSQLScriptsOptions mssqlScriptsOptions)
     {
@@ -34,10 +34,10 @@ public class SqlAutomaticScriptingService : IHostedService, IDisposable
 
     public async Task ExecuteScriptsAsync()
     {
-        var ver = versionRepository.SelectAsync();
+        var ver = await versionRepository.SelectAsync();
         if (ver is null)
         {
-            logger.LogError("Vesion of database not exists");
+            logger.LogInformation("Initializing database.");
             await RunScriptsFromFileAsync(mssqlScriptsOptions.SchemaPath);
             await RunScriptsFromFileAsync(mssqlScriptsOptions.InitPath);
         }
@@ -45,15 +45,15 @@ public class SqlAutomaticScriptingService : IHostedService, IDisposable
 
     public async Task RunScriptsFromFileAsync(string scriptPath)
     {
-        var dataPath = Path.Join(Directory.GetCurrentDirectory(), scriptPath);
         var listOfqueries = File.Exists(scriptPath)
             ? Regex.Replace(string.Join(" ", await File.ReadAllLinesAsync(scriptPath)), @"[\r|\n|\t]", " ")
             .Split(';')
             .Where(x => !string.IsNullOrWhiteSpace(x) && !string.IsNullOrEmpty(x))
-            .ToList()
-            : null;
+        .ToList()
+        : null;
 
         if (listOfqueries?.Any() is not null)
             await versionRepository.ExecuteQueriesAsync(listOfqueries);
     }
 }
+
