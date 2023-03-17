@@ -49,7 +49,7 @@ CREATE TABLE dbo.Apprentices
 	Country varchar(50) NULL,
 	ClubCardId varchar(50) NULL,
 	IsValid bit NULL,
-	ModifiedOndatetime datetimeoffset(7) NULL,
+	ModifiedOn datetimeoffset(7) NULL,
 	ModifiedBy bigint NULL,
 	CreatedOn datetimeoffset(7) NULL,
 	CreatedBy bigint NULL,

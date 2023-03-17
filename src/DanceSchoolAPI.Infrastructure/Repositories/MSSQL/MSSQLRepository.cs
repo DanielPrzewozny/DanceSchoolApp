@@ -36,7 +36,7 @@ public class MSSQLRepository<TEntity> : BaseSqlRepository<TEntity>, IMSSQLReposi
 
         using (IDbConnection conn = await GetConnection())
         {
-            return await conn.QuerySingleOrDefaultAsync<TEntity>($"{Select} WHERE Id=@Id;", paramGet);
+            return await conn.QuerySingleOrDefaultAsync<TEntity>($"{Select} WHERE Id=@id;", paramGet);
         }
     }
 
