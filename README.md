@@ -1,5 +1,5 @@
 # DanceSchoolApp
-UI for this application is here: https://github.com/DanielPrzewozny/DanceSchoolManager
+UI for this application is here: https://github.com/DanielPrzewozny/DanceSchoolManager (work in progress)
 
 ## 1.	Jenkins
 ## 2.	RabbitMQ
