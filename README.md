@@ -1,8 +1,7 @@
 # DanceSchoolApp
-UI for this application is here: https://github.com/DanielPrzewozny/DanceSchoolApp-UI (work in progress)
+UI for this application: https://github.com/DanielPrzewozny/DanceSchoolApp-UI
 
-## 1.	Jenkins
-## 2.	RabbitMQ
+## 1.	RabbitMQ
 > work in progress
 - Status of lesson
 - Student status
@@ -13,14 +12,14 @@ UI for this application is here: https://github.com/DanielPrzewozny/DanceSchoolA
 | danceschool_data | nv.direct | nv.direct.student.lessonstates |
 | danceschool_data | nv.direct | nv.direct.teacher.lessonstates |
 
-## 3.	ElasticSearch
+## 2.	ElasticSearch
 > work in progress
 - Logs (cleanup_policy after 7 days)
-## 4.	Redis
+## 3.	Redis
 > work in progress
 - User tokens
 - ConnectionId (SignalR)
-## 5.	MongoDB (or PostgrSQL) collections (or dbs)
+## 4.	MongoDB (or PostgrSQL) collections (or dbs)
 > work in progress
 - Users
 - UserLessons
@@ -30,7 +29,7 @@ UI for this application is here: https://github.com/DanielPrzewozny/DanceSchoolA
 - Lessons
 - ArchivedLessons
 
-## 6. Docker
+## 5. Docker
 
 ## Libraries used in project: 
 > work in progress
